@@ -6,8 +6,7 @@ A sample project with a Makefile to restart the go-server if the source-code cha
 # Prerequisites
 
 * Install `inotifywait` with apt
-* If on mac, substitute inotifywait with `fswatch`, available via brew.
-
+* If on mac, substitute inotifywait with `fswatch`. See the section "Adjustments for Mac" for details. 
 
 ## Usage
 
@@ -22,10 +21,9 @@ A sample project with a Makefile to restart the go-server if the source-code cha
 
 When writing a server in go, it is not possible or necessary to do partial reloads of the application during development. A restart of the process is fast enough(sub-second, typically 5-600ms). 
 
-See the [Makefile](Makefile) for how the `make watch` target is working.  
+The example in the makefile watches for file-changes with the help of `inotifywait`/`fswatch` and takes advantage of `make`s built in support for incremental builds. 
 
-
-The watch target when using `inotifywatch`
+The watch target when using `inotifywatch` is basically a loop that waits until there are file-changes and then triggering a build:
 ```
 watch: clean server.PID
 	while true ; do \
@@ -34,6 +32,8 @@ watch: clean server.PID
 		inotifywait -qre close_write . ; \
 	done
 ```
+
+See the [Makefile](Makefile) for all details.  
 
 # Adjustments for Mac
 
